@@ -1,2 +1,0 @@
-# StompFlowApp
-Portable audio amplifier 
