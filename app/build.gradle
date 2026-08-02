@@ -1,0 +1,53 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.stompflow.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.stompflow.app"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            def keystoreFile = file("stompflow.keystore")
+            if (keystoreFile.exists()) {
+                storeFile keystoreFile
+                storePassword System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+            }
+            // If stompflow.keystore isn't present (e.g. a local build without
+            // the CI secrets decoded yet), this config is simply left unset
+            // and `assembleRelease` will fail with a clear signing error
+            // instead of silently producing an unsigned/broken APK.
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            // Uses Android's default auto-generated debug keystore.
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.webkit:webkit:1.11.0'
+}
