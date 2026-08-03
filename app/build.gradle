@@ -1,3 +1,5 @@
+import java.util.Base64
+
 plugins {
     id 'com.android.application'
 }
@@ -16,17 +18,33 @@ android {
 
     signingConfigs {
         release {
-            def keystoreFile = file("stompflow.keystore")
-            if (keystoreFile.exists()) {
-                storeFile keystoreFile
-                storePassword System.getenv("SIGNING_STORE_PASSWORD")
-                keyAlias System.getenv("SIGNING_KEY_ALIAS")
-                keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+            def keystoreBase64 = System.getenv("KEYSTORE_BASE64")
+            def storePassword = System.getenv("STORE_PASSWORD") ?: System.getenv("SIGNING_STORE_PASSWORD") ?: "android"
+            def keyAlias = System.getenv("KEY_ALIAS") ?: System.getenv("SIGNING_KEY_ALIAS") ?: "stompflow"
+            def keyPassword = System.getenv("KEY_PASSWORD") ?: System.getenv("SIGNING_KEY_PASSWORD") ?: "android"
+
+            if (keystoreBase64?.trim()) {
+                def decodedKeystore = file("build/stompflow-release.keystore")
+                decodedKeystore.parentFile.mkdirs()
+                decodedKeystore.bytes = Base64.getDecoder().decode(keystoreBase64)
+                storeFile decodedKeystore
+                storePassword storePassword
+                keyAlias keyAlias
+                keyPassword keyPassword
+            } else {
+                def rootKeystoreFile = rootProject.file("stompflow.keystore")
+                def moduleKeystoreFile = file("stompflow.keystore")
+                def keystoreFile = rootKeystoreFile.exists() ? rootKeystoreFile : (moduleKeystoreFile.exists() ? moduleKeystoreFile : null)
+
+                if (keystoreFile != null) {
+                    storeFile keystoreFile
+                    storePassword storePassword
+                    keyAlias keyAlias
+                    keyPassword keyPassword
+                } else {
+                    throw new GradleException("No signing keystore found. Provide KEYSTORE_BASE64 or place stompflow.keystore at the project root or app directory.")
+                }
             }
-            // If stompflow.keystore isn't present (e.g. a local build without
-            // the CI secrets decoded yet), this config is simply left unset
-            // and `assembleRelease` will fail with a clear signing error
-            // instead of silently producing an unsigned/broken APK.
         }
     }
 
