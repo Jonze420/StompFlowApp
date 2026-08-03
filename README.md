@@ -1,7 +1,7 @@
 # StompFlow — Android App
 
 A fully offline guitar FX pedalboard, drum machine, and tuner, wrapped as a
-native Android app. There is no server and no Base44 dependency at runtime —
+native Android app. There is no server dependencies at runtime —
 the entire app is one bundled HTML/JS file
 (`app/src/main/assets/StompFlow.html`) served locally through
 `WebViewAssetLoader`.
