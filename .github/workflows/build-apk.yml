@@ -7,7 +7,6 @@ env:
 steps:
   - name: Checkout repository
     uses: actions/checkout@v4
-
 - name: Setup Java JDK
   uses: actions/setup-java@v5.7.0
   with:
