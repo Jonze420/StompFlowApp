@@ -50,11 +50,7 @@ Generate one once (this can be done from any machine with a JDK, or a
 temporary GitHub Codespace) and keep it somewhere safe — you'll need the
 *same* keystore for every future release, or existing installs can't update:
 
-```bash
-keytool -genkeypair -v -keystore stompflow.keystore \
-  -alias stompflow -keyalg RSA -keysize 2048 -validity 10000
-base64 -w0 stompflow.keystore   # paste this output into KEYSTORE_BASE64
-```
+
 
 ## Updating the app itself
 
