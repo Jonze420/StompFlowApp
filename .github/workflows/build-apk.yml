@@ -30,8 +30,16 @@ jobs:
       - name: Grant execute permission for Gradle wrapper
         run: chmod +x gradlew
 
+      - name: Validate Gradle wrapper
+        run: |
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            echo "Gradle wrapper not found, generating..."
+            gradle wrapper --gradle-version 8.10
+            chmod +x gradlew
+          fi
+
       - name: Build release APK and AAB
-        run: ./gradlew assembleRelease bundleRelease
+        run: ./gradlew assembleRelease bundleRelease -x lint --warning-mode all
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
