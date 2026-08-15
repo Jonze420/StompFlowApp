@@ -1,0 +1,5 @@
+Trigger file to kick GitHub Actions workflows.
+
+This commit is intentionally empty in content and is used to trigger the "Build StompFlow Debug APK" workflow on push to the default branch.
+
+Timestamp: 2026-08-15T00:00:00Z
